@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Greefo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0f1a;
+      --surface: #141627;
+      --surface2: #1c1f36;
+      --border: rgba(255,255,255,0.07);
+      --accent: #7c5cfc;
+      --accent2: #5c9bfc;
+      --danger: #ff4d6d;
+      --warning: #fbbf24;
+      --success: #22d3a5;
+      --text: #e8e9f0;
+      --muted: #7b7e9e;
+      --card-shadow: 0 4px 24px rgba(0,0,0,0.35);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 240px;
+      height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 28px 0 20px;
+      z-index: 100;
+    }
+
+    .sidebar-logo {
+      padding: 0 24px 28px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-logo .logo-icon {
+      width: 42px; height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .sidebar-logo h2 { font-size: 16px; font-weight: 700; }
+    .sidebar-logo p  { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    .sidebar-nav { flex: 1; padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      color: var(--muted);
+      font-size: 14px; font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .nav-item:hover, .nav-item.active {
+      background: rgba(124,92,252,0.15);
+      color: var(--accent);
+    }
+    .nav-item .icon { font-size: 18px; width: 22px; text-align: center; }
+
+    .sidebar-footer {
+      padding: 16px 12px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .logout-btn {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(255,77,109,0.1);
+      color: var(--danger);
+      font-size: 14px; font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .logout-btn:hover { background: rgba(255,77,109,0.2); }
+
+    /* ===== MAIN CONTENT ===== */
+    .main {
+      margin-left: 240px;
+      padding: 32px;
+      min-height: 100vh;
+    }
+
+    /* ===== TOP BAR ===== */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+
+    .topbar h1 {
+      font-size: 26px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .topbar p { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+    .admin-badge {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(124,92,252,0.15);
+      border: 1px solid rgba(124,92,252,0.3);
+      border-radius: 30px;
+      padding: 8px 16px;
+      font-size: 13px; font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* ===== STATS GRID ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-3px); box-shadow: var(--card-shadow); }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      opacity: 0.08;
+    }
+
+    .stat-card.purple::before { background: var(--accent); }
+    .stat-card.blue::before   { background: var(--accent2); }
+    .stat-card.green::before  { background: var(--success); }
+    .stat-card.orange::before { background: var(--warning); }
+
+    .stat-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin-bottom: 14px;
+    }
+
+    .stat-card.purple .stat-icon { background: rgba(124,92,252,0.15); }
+    .stat-card.blue .stat-icon   { background: rgba(92,155,252,0.15); }
+    .stat-card.green .stat-icon  { background: rgba(34,211,165,0.15); }
+    .stat-card.orange .stat-icon { background: rgba(251,191,36,0.15); }
+
+    .stat-number {
+      font-size: 32px; font-weight: 800;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-card.purple .stat-number { color: var(--accent); }
+    .stat-card.blue .stat-number   { color: var(--accent2); }
+    .stat-card.green .stat-number  { color: var(--success); }
+    .stat-card.orange .stat-number { color: var(--warning); }
+
+    .stat-label { font-size: 13px; color: var(--muted); font-weight: 500; }
+
+    /* ===== SECTION CARD ===== */
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-header h2 {
+      font-size: 17px; font-weight: 700;
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .section-header .badge {
+      background: rgba(124,92,252,0.15);
+      color: var(--accent);
+      font-size: 11px; font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* ===== POSTS LIST ===== */
+    .posts-list { padding: 16px 24px; display: flex; flex-direction: column; gap: 12px; }
+
+    .post-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      transition: border-color 0.2s;
+    }
+    .post-item:hover { border-color: rgba(124,92,252,0.3); }
+
+    .post-mood-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px; font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .mood-happy  { background: rgba(222,159,239,0.2); color: #de9fef; }
+    .mood-sad    { background: rgba(108,117,125,0.2); color: #9aa0a6; }
+    .mood-chill  { background: rgba(254,251,113,0.2); color: #d4c424; }
+    .mood-talk   { background: rgba(40,167,69,0.2);   color: #40c06a; }
+
+    .post-body { flex: 1; }
+    .post-author { font-size: 13px; font-weight: 700; color: var(--accent2); }
+    .post-message { font-size: 14px; color: var(--text); margin: 5px 0; line-height: 1.5; }
+    .post-time { font-size: 11px; color: var(--muted); }
+
+    .post-actions { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
+
+    .btn-delete {
+      background: rgba(255,77,109,0.1);
+      border: 1px solid rgba(255,77,109,0.2);
+      color: var(--danger);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-delete:hover { background: rgba(255,77,109,0.25); border-color: var(--danger); }
+
+    .btn-warn {
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.2);
+      color: var(--warning);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-warn:hover { background: rgba(251,191,36,0.25); }
+
+    /* ===== USERS TABLE ===== */
+    .users-table { width: 100%; border-collapse: collapse; }
+    .users-table thead tr { background: rgba(255,255,255,0.03); }
+    .users-table th {
+      text-align: left;
+      padding: 14px 20px;
+      font-size: 12px; font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .users-table td {
+      padding: 14px 20px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .users-table tr:last-child td { border-bottom: none; }
+    .users-table tbody tr { transition: background 0.15s; }
+    .users-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+    .user-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 700;
+      color: #fff;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    /* ===== ACTIVITY LOG ===== */
+    .activity-log { padding: 4px 0; }
+    .log-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .log-row:last-child { border-bottom: none; }
+    .log-row:hover { background: rgba(255,255,255,0.02); }
+
+    .log-action {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .action-login  { background: rgba(34,211,165,0.15); color: var(--success); }
+    .action-logout { background: rgba(255,77,109,0.15);  color: var(--danger);  }
+
+    .log-user { font-size: 14px; font-weight: 600; flex: 1; }
+    .log-id   { font-size: 12px; color: var(--muted); width: 36px; }
+    .log-time { font-size: 12px; color: var(--muted); }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1100px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) {
+      .sidebar { width: 200px; }
+      .main { margin-left: 200px; padding: 20px; }
+    }
+    @media (max-width: 600px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🌿</div>
+    <h2>Greefo Admin</h2>
+    <p>Control Panel</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="#stats"    class="nav-item active"><span class="icon">📊</span> Dashboard</a>
+    <a href="#posts"    class="nav-item"><span class="icon">📝</span> All Posts</a>
+    <a href="#users"    class="nav-item"><span class="icon">👥</span> Users</a>
+    <a href="#activity" class="nav-item"><span class="icon">🔔</span> Activity Log</a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="/logout" class="logout-btn">
+      <span>🚪</span> Logout
+    </a>
+  </div>
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main">
+
+  <!-- TOP BAR -->
+  <div class="topbar" id="stats">
+    <div>
+      <h1>Admin Dashboard</h1>
+      <p>Welcome back, Admin. Here's your overview.</p>
+    </div>
+    <div class="admin-badge">
+      <span>🛡️</span> admin
+    </div>
+  </div>
+
+  <!-- STATS CARDS -->
+  <div class="stats-grid">
+    <div class="stat-card purple">
+      <div class="stat-icon">📝</div>
+      <div class="stat-number">{{ stats.total_posts }}</div>
+      <div class="stat-label">Total Posts</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-icon">👥</div>
+      <div class="stat-number">{{ stats.total_users }}</div>
+      <div class="stat-label">Registered Users</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-icon">🔑</div>
+      <div class="stat-number">{{ stats.total_logins }}</div>
+      <div class="stat-label">Total Logins</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-icon">💬</div>
+      <div class="stat-number">{{ stats.total_msgs }}</div>
+      <div class="stat-label">Private Messages</div>
+    </div>
+  </div>
+
+  <!-- ALL POSTS -->
+  <div class="section-card" id="posts">
+    <div class="section-header">
+      <h2>📝 All Posts <span class="badge">{{ messages|length }}</span></h2>
+    </div>
+
+    {% if messages %}
+    <div class="posts-list">
+      {% for msg in messages %}
+      <!-- msg: id(0), user(1), message(2), time(3), mood(4) -->
+      <div class="post-item">
+        <span class="post-mood-badge mood-{{ msg[4] }}">{{ msg[4]|capitalize }}</span>
+        <div class="post-body">
+          <div class="post-author">@{{ msg[1] }}</div>
+          <div class="post-message">{{ msg[2] }}</div>
+          <div class="post-time">🕒 {{ msg[3] }}</div>
+        </div>
+        <div class="post-actions">
+          <form action="/delete_message/{{ msg[0] }}" method="POST"
+                onsubmit="return confirm('Delete this post by {{ msg[1] }}?')">
+            <button type="submit" class="btn-delete">🗑 Delete</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">📭</div>
+      <p>No posts yet.</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- USERS -->
+  <div class="section-card" id="users">
+    <div class="section-header">
+      <h2>👥 Registered Users <span class="badge">{{ users|length }}</span></h2>
+    </div>
+
+    {% if users %}
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>User</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <!-- u: id(0), username(1), profile_pic(2) -->
+        <tr>
+          <td style="color:var(--muted)">{{ u[0] }}</td>
+          <td>
+            <span class="user-avatar">{{ u[1][0]|upper }}</span>
+            <strong>{{ u[1] }}</strong>
+          </td>
+          <td>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <form action="/admin/clear_posts/{{ u[1] }}" method="POST"
+                    onsubmit="return confirm('Clear ALL posts by {{ u[1] }}?')">
+                <button type="submit" class="btn-warn">🧹 Clear Posts</button>
+              </form>
+              <form action="/admin/delete_user/{{ u[0] }}" method="POST"
+                    onsubmit="return confirm('PERMANENTLY delete user {{ u[1] }} and all their data?')">
+                <button type="submit" class="btn-delete">🗑 Delete User</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">👤</div>
+      <p>No users registered yet.</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- ACTIVITY LOG -->
+  <div class="section-card" id="activity">
+    <div class="section-header">
+      <h2>🔔 Login Activity <span class="badge">{{ activity|length }}</span></h2>
+    </div>
+
+    {% if activity %}
+    <div class="activity-log">
+      {% for log in activity %}
+      <!-- log: id(0), username(1), action(2), time(3) -->
+      <div class="log-row">
+        <span class="log-id">#{{ log[0] }}</span>
+        <span class="log-action action-{{ log[2] }}">{{ log[2]|upper }}</span>
+        <span class="log-user">{{ log[1] }}</span>
+        <span class="log-time">🕒 {{ log[3] }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <p>No activity recorded yet.</p>
+    </div>
+    {% endif %}
+  </div>
+
+</main>
+
+</body>
+</html>

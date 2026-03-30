@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sad Wall | Greefo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --secondary: #64748b;
+            --bg-dark: #0f172a;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background: var(--bg-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Waves Animation (Sad: Calmer & Darker) */
+        .waves {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 12vh;
+            min-height: 80px; max-height: 120px; z-index: -1;
+        }
+        .parallax > use { animation: move-forever 25s cubic-bezier(.55,.5,.45,.5) infinite; }
+        .parallax > use:nth-child(1) { animation-delay: -2s; animation-duration: 8s; fill: rgba(30, 41, 59, 0.4); }
+        .parallax > use:nth-child(2) { animation-delay: -3s; animation-duration: 11s; fill: rgba(51, 65, 85, 0.4); }
+        .parallax > use:nth-child(3) { animation-delay: -4s; animation-duration: 14s; fill: rgba(59, 130, 246, 0.2); }
+        .parallax > use:nth-child(4) { animation-delay: -5s; animation-duration: 20s; fill: var(--bg-dark); }
+
+        @keyframes move-forever {
+            0% { transform: translate3d(-90px,0,0); }
+            100% { transform: translate3d(85px,0,0); }
+        }
+
+        .header-section { text-align: center; margin-bottom: 50px; animation: fadeInDown 0.8s ease-out; }
+        h1 { font-family: 'Outfit', sans-serif; font-size: 52px; font-weight: 800; color: white; margin-bottom: 8px; }
+        h2 { font-size: 18px; color: var(--text-muted); font-weight: 400; letter-spacing: 1px; }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Post Form */
+        .post-form {
+            width: 100%; max-width: 680px; background: var(--glass);
+            backdrop-filter: blur(20px); border: 1px solid var(--glass-border);
+            padding: 30px; border-radius: 28px; margin-bottom: 60px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4); z-index: 10;
+        }
+
+        textarea {
+            width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border);
+            border-radius: 18px; padding: 20px; color: white; font-size: 16px;
+            resize: none; outline: none; transition: 0.3s; min-height: 90px; margin-bottom: 20px;
+        }
+        textarea:focus { border-color: var(--primary); background: rgba(255,255,255,0.06); box-shadow: 0 0 25px rgba(59,130,246,0.15); }
+
+        .btn-post {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; border: none; padding: 16px 35px; border-radius: 15px;
+            font-weight: 800; cursor: pointer; transition: 0.4s; font-size: 16px;
+            width: 100%; letter-spacing: 1px;
+        }
+        .btn-post:hover { transform: translateY(-3px); filter: brightness(1.1); box-shadow: 0 15px 30px rgba(59,130,246,0.25); }
+
+        /* Feed */
+        .feed { width: 100%; max-width: 680px; display: flex; flex-direction: column; gap: 25px; z-index: 10; }
+
+        .message-card {
+            background: var(--glass); backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border); padding: 25px; border-radius: 24px;
+            animation: slideInUp 0.8s ease-out both; box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(40px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .message-header { display: flex; align-items: center; gap: 15px; margin-bottom: 12px; }
+        .avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--secondary); object-fit: cover; opacity: 0.8; }
+        .user-name { color: white; font-weight: 700; font-size: 17px; text-decoration: none; }
+        .time-badge { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+
+        .message-text { color: var(--text-main); font-size: 16px; line-height: 1.7; padding-left: 65px; margin-bottom: 20px; opacity: 0.9; }
+
+        .actions { display: flex; gap: 15px; padding-left: 65px; }
+        .btn-action {
+            text-decoration: none; font-size: 13px; font-weight: 700; padding: 10px 20px;
+            border-radius: 12px; transition: 0.3s; background: rgba(255,255,255,0.06); color: var(--text-muted);
+        }
+        .btn-action:hover { background: rgba(255,255,255,0.12); color: white; transform: translateY(-2px); }
+
+        .btn-delete { background: rgba(239, 68, 68, 0.1); color: #fca5a5; border: none; cursor: pointer; }
+        .btn-delete:hover { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+        .btn-back { margin-top: 60px; color: var(--text-muted); text-decoration: none; font-weight: 700; transition: 0.3s; }
+        .btn-back:hover { color: white; transform: translateX(-5px); }
+
+    </style>
+</head>
+<body>
+
+    <div class="header-section">
+        <h1>😔 Feeling sad</h1>
+        <h2>It's alright not to be ok 🤗. Spill it out.</h2>
+    </div>
+
+    <div class="post-form">
+        <form method="POST">
+            <textarea name="message" required placeholder="What's weighing on your mind?" 
+                      onkeydown="if(event.key==='Enter' && !event.shiftKey){ this.form.submit(); return false; }"></textarea>
+            <button type="submit" class="btn-post">Let it go</button>
+        </form>
+    </div>
+
+    <div class="feed">
+        {% for msg in messages %}
+        <div class="message-card" style="animation-delay: {{ loop.index0 * 0.12 }}s">
+            <div class="message-header">
+                <img src="{{ url_for('static', filename='img/' + user_pics.get(msg[1], 'sadavatar.jpg')) }}" class="avatar">
+                <a href="#" class="user-name">@{{ msg[1] }}</a>
+                <span class="time-badge">🕒 {{ msg[3] }}</span>
+            </div>
+            <div class="message-text">{{ msg[2] }}</div>
+            <div class="actions">
+                {% if msg[1] != session['user'] %}
+                <a href="{{ url_for('chat', username=msg[1]) }}" class="btn-action">💬 Chat</a>
+                {% endif %}
+                {% if msg[1] == session['user'] or session['user'] == 'admin' %}
+                <form action="{{ url_for('delete_message', id=msg[0]) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn-action btn-delete">🗑 Delete</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <a href="/mood" class="btn-back">⬅ Back to Mood Selection</a>
+
+    <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+        <defs><path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" /></defs>
+        <g class="parallax">
+            <use xlink:href="#gentle-wave" x="48" y="0" /><use xlink:href="#gentle-wave" x="48" y="3" />
+            <use xlink:href="#gentle-wave" x="48" y="5" /><use xlink:href="#gentle-wave" x="48" y="7" />
+        </g>
+    </svg>
+
+</body>
+</html>
