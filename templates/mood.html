@@ -76,7 +76,9 @@
             font-family: 'Outfit', sans-serif; font-size: 56px; font-weight: 800;
             margin-bottom: 15px; letter-spacing: -1px; animation: fadeInDown 1s ease-out;
             background: linear-gradient(135deg, #fff, #a5b4fc);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         h3 {
             font-size: 18px; font-weight: 400; color: #94a3b8; margin-bottom: 50px;
@@ -132,6 +134,34 @@
         .nav-link:hover { background: rgba(255,255,255,0.1); color: white; border-color: var(--glass-border); }
         .admin-link { color: #facc15; border-color: rgba(250, 204, 21, 0.2); }
 
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            h1 { font-size: 40px; }
+            h3 { font-size: 16px; margin-bottom: 30px; }
+            .mood-container { gap: 15px; }
+            .mood-card { width: 140px; border-radius: 20px; padding: 15px; }
+            .mood-card img { height: 100px; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 40px 15px; overflow-y: auto; }
+            h1 { font-size: 32px; }
+            .mood-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                width: 100%;
+                max-width: 100%;
+            }
+            .mood-card {
+                width: auto;
+                padding: 12px;
+                border-radius: 18px;
+            }
+            .mood-card img { height: 90px; }
+            .nav-container { flex-direction: column; width: 100%; }
+            .nav-link { text-align: center; width: 100%; }
+            .waves { height: 10vh; }
+        }
     </style>
 </head>
 

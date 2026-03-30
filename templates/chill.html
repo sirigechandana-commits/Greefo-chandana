@@ -110,6 +110,26 @@
         .btn-back { margin-top: 60px; color: var(--text-muted); text-decoration: none; font-weight: 700; transition: 0.3s; }
         .btn-back:hover { color: white; transform: translateX(-5px); }
 
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            h1 { font-size: 40px; }
+            .post-form, .feed { max-width: 100%; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 40px 15px; }
+            h1 { font-size: 32px; }
+            h2 { font-size: 15px; }
+            .post-form { padding: 20px; border-radius: 20px; margin-bottom: 40px; }
+            textarea { padding: 15px; font-size: 15px; }
+            .message-card { padding: 18px; border-radius: 18px; }
+            .avatar { width: 40px; height: 40px; }
+            .user-name { font-size: 15px; }
+            .message-text { padding-left: 0; font-size: 15px; margin-top: 10px; }
+            .actions { padding-left: 0; justify-content: flex-start; }
+            .btn-action { padding: 8px 14px; font-size: 12px; }
+            .waves { height: 8vh; }
+        }
     </style>
 </head>
 <body>
