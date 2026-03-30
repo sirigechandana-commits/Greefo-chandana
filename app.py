@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
+import os
 
 app = Flask(__name__)
 app.secret_key = "greefo_secret"
@@ -15,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE,
     password TEXT,
-    profile_pic TEXT DEFAULT 'default.png'
+    profile_pic TEXT DEFAULT 'avatar.jpg'
 )
 """)
 
@@ -103,7 +104,7 @@ def signup():
 
         cur.execute(
             "INSERT INTO users (username, password, profile_pic) VALUES (?, ?, ?)",
-            (username, password, "default.png")
+            (username, password, "avatar.jpg")
         )
 
         conn.commit()
@@ -158,7 +159,8 @@ def admin():
     
     # Get all users (except admin)
     cursor.execute("SELECT id, username, profile_pic FROM users WHERE username != 'admin' ORDER BY id DESC")
-    users = cursor.fetchall()
+    raw_users = cursor.fetchall()
+    users = [(u[0], u[1], 'avatar.jpg' if not u[2] or u[2] == 'default.png' else u[2]) for u in raw_users]
 
     # Calculate Stats
     cursor.execute("SELECT COUNT(*) FROM posts")
@@ -258,7 +260,8 @@ def handle_wall(mood_name, template_name):
     # ⭐ GET USER PROFILE PICS
     try:
         cur.execute("SELECT username, profile_pic FROM users")
-        user_pics = dict(cur.fetchall())
+        results = cur.fetchall()
+        user_pics = {u: (p if p and p != 'default.png' else 'avatar.jpg') for u, p in results}
     except:
         user_pics = {}
 
@@ -402,4 +405,5 @@ def delete_chat(id):
     
 # -------- RUN --------
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)

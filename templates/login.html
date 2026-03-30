@@ -223,12 +223,12 @@
         </div>
         {% endif %}
 
-        <form method="POST" action="/login">
+        <form method="POST" action="/login" autocomplete="off">
             <div class="input-group">
-                <input type="text" name="username" placeholder="Username" required>
+                <input type="text" name="username" placeholder="Username" required autocomplete="off">
             </div>
             <div class="input-group">
-                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="password" placeholder="Password" required autocomplete="new-password">
             </div>
             <button type="submit">Login Now</button>
         </form>

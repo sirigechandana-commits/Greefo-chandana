@@ -225,14 +225,14 @@
         </div>
         {% endif %}
 
-        <form method="POST" action="/signup">
+        <form method="POST" action="/signup" autocomplete="off">
             <div class="input-group">
                 <label>Choose a Username</label>
-                <input type="text" name="username" placeholder="e.g. lokesh_dev" required>
+                <input type="text" name="username" placeholder="e.g. lokesh_dev" required autocomplete="off">
             </div>
             <div class="input-group">
                 <label>Create a Password</label>
-                <input type="password" name="password" placeholder="••••••••" required>
+                <input type="password" name="password" placeholder="••••••••" required autocomplete="new-password">
             </div>
             <button type="submit">Create Free Account</button>
         </form>
